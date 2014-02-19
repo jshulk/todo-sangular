@@ -1,0 +1,60 @@
+	
+<div class = "row">
+	<div class = "col-lg-2"></div>
+	
+	<div class = 'col-lg-8'>
+		<div class = 'jumbotron'>
+			<h1>Todos List</h1>
+			<table class = "table">
+				<thead>
+					<tr>
+						<th>Title<th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat = "todo in todos track by $index" class = "row">
+						<td class = 'col-lg-6'>{{todo.title}}</td>
+						<td class = 'col-lg-6'>
+							<a class = 'btn btn-success' data-toggle = "modal" ng-click = 'editTodo(todo)'>Edit</a>
+							<a class = 'btn btn-warning'>Delete</a>
+
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class = "col-lg-2"></div>
+
+	<div bs-modal = "editedTodo" upflag='updateSuccess' cb = "updateTodo(editedTodo)"  id = "todoEditModal"  class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<h4>Modal title</h4>
+				</div><!--end of modal header -->
+
+				<div class="modal-body">
+					<form ng-submit = "updateTodo(editedTodo)">
+						<input type = "checkbox" ng-bind='editedTodo.completed' />
+						<input type = "text" ng-bind = "editedTodo.title" />
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button class = "btn btn-default" data-dismiss = "modal">Close</button>
+					<button class = 'btn btn-primary' ng-click="updateTodo(editedTodo)">Save</button>
+				</div>
+
+			</div><!-- end of modal content -->
+		</div><!-- end of modal dialog -->
+	</div>
+</div>
+
+
+
+
+

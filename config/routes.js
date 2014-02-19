@@ -33,7 +33,7 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
   '/': {
-    view: 'home/index'
+    view: 'todo/index'
   },
   'post /todo' : 'TodoController.create',
   'get /todo/:id?' : 'TodoController.find',

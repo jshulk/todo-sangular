@@ -8,6 +8,7 @@
     -->
     <title><%- title %></title>
 
+    <script type="text/javascript" src = "/js/libs/angular-loader.js"></script>
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
@@ -20,7 +21,8 @@
       as you would normally: using <link/> tags.
       
     -->
-
+    <link rel="stylesheet" type="text/css" href="/styles/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/bootstrap-theme.css">
     <!--
 
       Support for LESS included by default
@@ -37,6 +39,11 @@
 
   <body>
 
+    <div class = "navbar navbar-fixed-top navbar-inverse">
+      <div class = "container">
+        <a href = "/" class = "navbar-brand">Home</a>
+      </div>
+    </div>
     <!-- Include the view file for the current controller/route -->
     <%- body %>
 
