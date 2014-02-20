@@ -1,0 +1,22 @@
+<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<h4>Modal title</h4>
+				</div><!--end of modal header -->
+
+				<div class="modal-body">
+					<form ng-submit = "updateTodo(editedTodo)">
+						<input type = "checkbox" ng-model='editedTodo.completed' />
+						<input type = "text" ng-model = "editedTodo.title" />
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button class = "btn btn-default" data-dismiss = "modal">Close</button>
+					<button class = 'btn btn-primary' ng-click="updateTodo(editedTodo)">Save</button>
+				</div>
+
+			</div><!-- end of modal content -->
+		</div><!-- end of modal dialog -->
