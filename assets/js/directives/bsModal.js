@@ -1,13 +1,19 @@
-define(['jquery', "todo", 'bootstrap'], function($, todo){
+define([
+		'jquery', 
+		"todo", 
+		'text!partials/bs-modal.html',
+		'bootstrap'], 
+		function($, todo, bsModalTemplate){
 
 	return todo.directive('bsModal', function(){
 
 		return {
+			template: bsModalTemplate,
 			restrict : 'A',
 			scope:{
-				editedTodo : '=bsModal',
-				updateTodo : '&cb',
-				updateFlag : '@upflag'
+				editedTodo : '=edTodo',
+				updateTodo : '&updateCallback',
+				updateSuccess : '=successFlag'
 			},
 			link: function(scope, element, attrs) {
 				var $el,
@@ -41,8 +47,11 @@ define(['jquery', "todo", 'bootstrap'], function($, todo){
 
 				scope.$watch('updateSuccess', function(value){
 					console.log('watching updateflag');
-					if(value)
+					if(value){
 						$editModal.modal('hide');
+						scope.updateSuccess = false;
+					}
+						
 				});
 
 			}
