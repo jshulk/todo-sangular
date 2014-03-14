@@ -8,9 +8,16 @@ define([
 	return todo.controller('TodosController', 
 		['$scope', 'todosFactory',	function($scope, todosFactory){
 
+		$scope.message = 'hello world';
 		
+		$scope.paginationOptions ={
+			name : 'ng-paginate'
+		};
+
 		$scope.editedTodo = null;
 		$scope.updateSuccess = false;
+		$scope.addSuccess = false;
+		$scope.showAdd = false;
 
 
 		$scope.editTodo = function(todo){
@@ -26,6 +33,32 @@ define([
 
 		});
 
+		$scope.showAddTodo = function(){
+			$scope.showAdd = true;
+			console.log('shwos add todo called');
+		};
+
+		$scope.addTodo = function(todo){
+			todosFactory.addTodo(todo.newTodo).then( function(response){
+
+				$scope.todos.push(response.data);
+
+				$scope.addSuccess = true;
+			
+			}, function(err){
+				console.log('err');
+				console.log(err);
+			});
+		};
+		$scope.removeTodo = function(todo){
+			console.log('remove todo  called');
+			console.log(todo);
+			todosFactory.removeTodo(todo).then(function(response){
+				$scope.todos.splice($scope.todos.indexOf(todo), 1);
+			}, function(err){
+				console.log(err);
+			});
+		};
 
 		$scope.updateOriginal = function(todo){
 			todo = todo[0];

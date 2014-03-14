@@ -4,6 +4,8 @@ define([
 		"text!partials/todos.html",
 		"controllers/TodosController",
 		"directives/bsModal",
+		"directives/bsAddModal",
+		"directives/jPaginate",
 		"angularRoute"
 		], 
 

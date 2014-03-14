@@ -6,10 +6,16 @@ define(["todo"], function(todo){
 			return {
 
 				getTodos: function(){
-					return $http.get("/todo");
+					return $http.get("/todo?limit=10&skip=10" );
 				},
 				updateTodo: function(todo){
 					return $http.put('/todo/'+todo.id, todo );
+				},
+				addTodo: function(todo){
+					return $http.post('/todo', todo);
+				},
+				removeTodo: function(todo){
+						return $http.delete('/todo/'+todo.id, todo);
 				}
 
 			};

@@ -5,6 +5,11 @@
 	<div class = 'col-lg-8'>
 		<div class = 'jumbotron'>
 			<h1>Todos List</h1>
+			<button class = 'btn btn-primary' ng-click = 'showAddTodo()'>Add Todo</button>
+			 
+			<div j-paginate>
+			</div>
+			
 			<table class = "table">
 				<thead>
 					<tr>
@@ -13,11 +18,16 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat = "todo in todos track by $index" class = "row">
-						<td class = 'col-lg-6'>{{todo.title}}</td>
+					<tr ng-repeat = "todo in todos " class = "row">
+						<td class = 'col-lg-6'>
+							
+						<input type = 'checkbox' ng-model = 'todo.completed' />
+
+						{{todo.title}}
+						</td>
 						<td class = 'col-lg-6'>
 							<a class = 'btn btn-success' data-toggle = "modal" ng-click = 'editTodo(todo)'>Edit</a>
-							<a class = 'btn btn-warning'>Delete</a>
+							<a  class = 'btn btn-warning' ng-click = 'removeTodo(todo)'>Delete</a>
 
 						</td>
 					</tr>
@@ -31,6 +41,12 @@
 	<div bs-modal ed-todo= "editedTodo" success-flag='updateSuccess' update-callback = "updateTodo(editedTodo)"  id = "todoEditModal"  class="modal fade" role="dialog">
 		
 	</div>
+
+	<div bs-add-modal add-callback = "addTodo(newTodo)"  id = "todoAddModal"  class="modal fade" role="dialog">
+		
+	</div>
+
+
 </div>
 
 
