@@ -5,8 +5,9 @@ define(["todo"], function(todo){
 
 			return {
 
-				getTodos: function(){
-					return $http.get("/todo?limit=10&skip=10" );
+				getTodos: function(params){
+					
+					return $http.get("/todo?limit="+params.limit+"&skip="+params.skip);
 				},
 				updateTodo: function(todo){
 					return $http.put('/todo/'+todo.id, todo );

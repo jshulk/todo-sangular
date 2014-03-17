@@ -20,7 +20,7 @@
 				<tbody>
 					<tr ng-repeat = "todo in todos " class = "row">
 						<td class = 'col-lg-6'>
-							
+						{{todo.id}}	
 						<input type = 'checkbox' ng-model = 'todo.completed' />
 
 						{{todo.title}}

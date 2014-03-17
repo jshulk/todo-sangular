@@ -14,6 +14,21 @@ define([
 			name : 'ng-paginate'
 		};
 
+		$scope.totalRecords = 70;
+		$scope.perPage = 5;
+		$scope.paginationOptions = {};
+		$scope.perPageOptions = [5, 10, 15];
+
+		$scope.loadData = function(num, perPage){
+			$scope.perPage = perPage;
+			$scope.getTodos({
+				limit:$scope.perPage,
+				skip : (num-1)*$scope.perPage
+			})
+		};
+
+
+
 		$scope.editedTodo = null;
 		$scope.updateSuccess = false;
 		$scope.addSuccess = false;
@@ -24,14 +39,25 @@ define([
 			$scope.editedTodo = angular.copy(todo);
 		};
 
-		todosFactory.getTodos().success(function (data){
+
+
+		$scope.getTodos = function(params){
+
+			todosFactory.getTodos(params).success(function (data){
 			
 			$scope.todos = data;
 
-		}).error( function(err){
-			console.log(err);
+			}).error( function(err){
+				console.log(err);
 
+			});
+		};
+
+		$scope.getTodos({
+			limit : $scope.perPage,
+			skip : 0
 		});
+		
 
 		$scope.showAddTodo = function(){
 			$scope.showAdd = true;

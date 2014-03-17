@@ -8,40 +8,19 @@ define([
 	return app.directive('jPaginate', function(){
 
 
-		var domUtil = {
-
-			getElem: function (id) {
-				return this.wrap(document.getElementById(id));
-			},
-			wrap: function (el) {
-				return el ? angular.element(el) : null;
-			},
-			getVisibleElems: function(elems){
-				var style,
-					visibleElems = [];
-
-				for(var i = 0, len = elems.length; i <len; i++){
-					style = window.getComputedStyle(elems[i]);
-					
-					if(style.display!='none')
-						visibleElems.push(elems[i]);
-				}
-
-				return angular.element(visibleElems);
-			}
-		};
+		
 
 		var defaults = {
 
 				        containerID: "",
 				        first: false,
-				        previous: "← previous",
-				        next: "next →",
+				        previous: "←",
+				        next: "→",
 				        last: false,
 				        links: "numeric", // blank || title
 				        startPage: 1,
-				        perPage: 10,
-				        midRange: 5,
+				        perPage: 5,
+				        midRange: 3,
 				        startRange: 1,
 				        endRange: 1,
 				        keyBrowse: false,
@@ -56,127 +35,118 @@ define([
 				        callback: undefined // function( pages, items ) { }
 		};
 
-		function Plugin(element, options) {
-		
-		    this.options = angular.extend({}, defaults, options);
-
-		    this._container = domUtil.getElem(this.options.containerID);
-		    if (!this._container.length) return;
-
-		    //this.jQwindow = $(window);
-		    //this.jQdocument = $(document);
-
-		    this._holder = element;
-		    this._nav = {};
-
-		    this._first = domUtil.wrap( this.options.first );
-		    this._previous = domUtil.wrap(this.options.previous);
-		    this._next = domUtil.wrap(this.options.next);
-		    this._last = domUtil.wrap(this.options.last);
-
-		    /* only visible items! */
-		    this._items = domUtil.getVisibleElems(this._container.children());
-		    this._itemsShowing = angular.element([]);
-		    this._itemsHiding = angular.element([]);
-
-		    this._numPages = Math.ceil(this._items.length / this.options.perPage);
-		    this._currentPageNum = this.options.startPage;
-
-		    this._clicked = false;
-		    //this._cssAnimSupport = this.getCSSAnimationSupport();
-
-		    this.init();
-	  }
-
-	  Plugin.prototype = {
-
-	  	constructor: Plugin,
-
-	  	init: function() {
-
-	  		this.setNav();
-	  		this.paginate( this._currentPageNum );
-	  	},
-
-	  	setNav: function () {
-	  		var navHtml = this.writeNav();
-	  	},
-
-	  	writeNav: function(){
-
-	  	}
-	  
-	  };
-
-
-
 
 
 		return {
 			restrict : 'EA',
-			scope:true,
-			template: 
-					'<a  ng-repeat="i in getNumber(numPages) track by $index"
-						 ng-click "linkSelected($index)"
-						 ng-class = "getCssClass($index)">{{$index}}'+
-					  '</a>',
+			scope: true,
+			template: paginationTemplate,
 			controller: function ($scope) {
 
 				this.initializePagination = function ( paginationOptions, holder ) {
 					
-					this.options = angular.extend({}, paginationOptions, defaults );					
-					this._holder = angular.element(holder);
-				    this._nav = {};
-
-				    this.totalRecords = $scope.totalRecords;
-				    this.perPage = $scope.perPage;
-				    this.currentPageNum = this.options.startPage;
-
-				    this._first = angular.element(this.options.first);
-				    this._previous = angular.element(this.options.previous);
-				    this._next = angular.element(this.options.next);
-				    this._last = angular.element(this.options.last);
-
-				    this._itemsShowing = angular.element([]);
-    				this._itemsHiding = angular.element([]);
-
-    				this._numPages = Math.ceil(this.totalRecords / this.options.perPage);
-    				this._currentPageNum = this.options.startPage;
-
+					$scope.options = angular.extend({}, paginationOptions, defaults );					
 					
-					this.render();
-					
+				};
+
+
+				this.getSafeRange = function(){
+					var a = [];
+					for(var i = 1; i <= $scope.options.startRange; i++){
+						a.push(i);
+					}
+
+					for( var j = ($scope.numPages - $scope.options.endRange)+1; j<= $scope.numPages; j++){
+						a.push(j);
+					}
+
+					return a;
 				};
 
 				this.setWatchers = function(){
 						var self = this;
 
-						$scope.$watchCollection('[totalRecords, perPage]', function(newValues) {
+						$scope.$watch('[totalRecords, perPage]', function(newValues, oldValues) {
+							
 							self.totalRecords = newValues[0];
 							self.perPage = newValues[1];
 							$scope.numPages = Math.ceil(self.totalRecords / self.perPage);
+							$scope.numPagesArray = $scope.getNumber($scope.numPages);
 							//self.render();
-						});
+							if( newValues[1] !== oldValues[1] ){
+								$scope.linkSelected(1);
+
+							}
+
+							$scope.interval = self.getInterval($scope.next);
+							$scope.safeRange = self.getSafeRange();
+
+						}, true);
 
 				};
 
-				this.render = function(){
-					this.setNav();
-				};
-				setNav: function(){
+				this.getInterval = function ( page ) {
 
+				      var neHalf, upperLimit, start, end;
+
+				      neHalf = Math.ceil($scope.options.midRange / 2);
+				      upperLimit = $scope.numPages - $scope.options.midRange;
+				      start = page > neHalf ? Math.max(Math.min(page - neHalf, upperLimit), 0) : 0;
+				      end = page > neHalf ?
+				        Math.min(page + neHalf - ($scope.options.midRange % 2 > 0 ? 1 : 0), $scope.numPages) :
+				        Math.min($scope.options.midRange, $scope.numPages);
+				      return {start: start+1,end: end};
 				};
+
+				
 			},
 			link: function(scope, element, attrs, controller ){
-				$scope.getNumber = function(n){
-					return new Array(n);
-				};
-				$scope.getCssClass = function(index, param){
+				
+				scope.current = 1;
+				scope.next = 1;
 
+				
+
+				scope.getNumber = function(n){
+					var a = [];
+					for( var i = 1; i <= n; i++ ){
+						a.push(i);
+					}
+					return a;
 				};
+
+
+				scope.linkSelected = function(num){
+					scope.next = num;
+					scope.loadData(num, scope.perPage);
+					scope.interval = controller.getInterval(num);
+					scope.current = num;
+				};
+
+				scope.getPreviousItem = function(){
+					scope.linkSelected(scope.current-1);
+				};
+				scope.getNextItem = function(){
+					scope.linkSelected(scope.current+1);
+				};
+
+				scope.getMoreItems = function($event){
+					if( angular.element($event.target).hasClass('next3') ) {
+						scope.linkSelected(scope.current+3);
+					}
+					else {
+						scope.linkSelected(scope.current-3);
+					}
+				};	
 
 				controller.setWatchers();
 				controller.initializePagination( scope.paginationOptions, element );
+				
+				
+
+
+				
+				
 
 			}
 
