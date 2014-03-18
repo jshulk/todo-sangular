@@ -74,7 +74,7 @@ define([
 							$scope.numPagesArray = $scope.getNumber($scope.numPages);
 							//self.render();
 							if( newValues[1] !== oldValues[1] ){
-								$scope.linkSelected(1);
+								$scope.linkSelected(1, true);
 
 							}
 
@@ -116,7 +116,9 @@ define([
 				};
 
 
-				scope.linkSelected = function(num){
+				scope.linkSelected = function(num, perPageUpdate){
+					
+					if( num === scope.current && !perPageUpdate ) return ;
 					scope.next = num;
 					scope.loadData(num, scope.perPage);
 					scope.interval = controller.getInterval(num);
